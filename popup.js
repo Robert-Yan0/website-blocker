@@ -50,7 +50,6 @@ function update_list() {
 
 function add_close_functionality() {
     close[close.length-1].addEventListener("click",function() {
-        console.log("close button clicked")
         var div = this.parentElement;
         div.style.display = "none";
         banned_urls.splice(close.length-1,1);

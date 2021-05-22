@@ -5,7 +5,6 @@ var banned_urls = [];
 var url = window.location.href;
 chrome.runtime.onMessage.addListener(getMessage);
 function getMessage(message, sender, sendResponse) {
-    console.log("got message");
     banned_urls = message;
     redirect();
 }

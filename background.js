@@ -9,7 +9,6 @@ function getMessage(message, sender, sendResponse) {
             chrome.tabs.sendMessage(tabs[0].id, banned_urls);  
         });
     } else if(message.length) {
-        console.log()
         banned_urls = message;
 
     } else {
