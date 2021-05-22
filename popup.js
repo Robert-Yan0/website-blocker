@@ -66,3 +66,57 @@ function attach_close_button(li) {
     li.appendChild(span);
     update_list();
 }
+
+function show_blocklist() {
+    var div = document.getElementById("block_section");
+    div.style.display = "block";    //shows the blocklist
+}
+
+function hide_blocklist() {
+    console.log("blocklist hidden");
+    var div = document.getElementById("block_section");
+    div.style.display = "none";    //hide the blocklist
+}
+
+function show_timer() {
+    var div = document.getElementById("timer_section");
+    div.style.display = "block";
+}
+
+function hide_timer() {
+    var div = document.getElementById("timer_section");
+    div.style.display = "none";
+}
+
+function show_shop() {
+    var div = document.getElementById("shop_section");
+    div.style.display = "block";
+}
+
+function hide_shop() {
+    var div = document.getElementById("shop_section");
+    div.style.display = "none";
+}
+
+document.getElementById("blocklist_btn").addEventListener("click", function() {
+    console.log("button clicked");
+    show_blocklist();
+    hide_timer();
+    hide_shop();
+});
+
+document.getElementById("timer_btn").addEventListener("click", function() {
+    console.log("button clicked");
+    
+    show_timer();
+    hide_blocklist();
+    hide_shop();
+});
+
+document.getElementById("shop_btn").addEventListener("click", function() {
+    console.log("button clicked");
+    
+    show_shop();
+    hide_blocklist();
+    hide_timer();
+});
