@@ -1,0 +1,13 @@
+ul li{
+    position: relative;
+    padding: 10px 5px 10px 20px;
+    font-size: 15px;
+
+}
+
+.close{
+    position: relative;
+    right: 0;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+}
