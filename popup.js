@@ -1,10 +1,14 @@
 var countDownDate = 0;
 var banned_urls = [];
+var points = 0;
+var timer_minutes = 0;
 
 var msg = {
     id: "get",
     banned_urls: banned_urls,
-    end_time: countDownDate
+    end_time: countDownDate,
+    points: points,
+    timer_minutes: timer_minutes
 };
 
 
@@ -22,6 +26,10 @@ function getMessage(message, sender, sendResponse) {
         countDownDate = message.end_time;
         start_timer();
     }
+    if(message.timer_minutes) {
+        timer_minutes = message.timer_minutes;
+    }
+    document.getElementById("shop_points").innerHTML = message.points;
 }
 
 
@@ -71,6 +79,7 @@ function update_list() {
     msg.id = "update";
     msg.banend_urls = banned_urls;
     msg.end_time = countDownDate;
+    msg.timer_minutes = timer_minutes;
     chrome.runtime.sendMessage(msg);
 }
 
@@ -99,8 +108,10 @@ var interval;
 //---------------------------------------------------------- timer code
 
 function start_timer() {
-      
+    update_points();
     document.getElementById("timer").innerHTML = "please wait...";
+    document.getElementById("points").innerHTML = "You will earn " + timer_minutes * 10 + " points";
+    update_list();
             // Update the count down every 1 second
             interval = setInterval(function() {
             
@@ -125,7 +136,11 @@ function start_timer() {
                     clearInterval(interval);
                     interval = 0;
                     CountDownDate = 0;
+                    points = points + timer_minutes;
+                    timer_minutes = 0;
                     document.getElementById("timer").innerHTML = "Timer Ended";
+                    document.getElementById("points").innerHTML = "";
+                    update_list();
                 }
             }, 1000);
 
@@ -136,6 +151,7 @@ document.getElementById("start").addEventListener("click",function(){
     console.log("button clicked");
     var timer_minutes = document.getElementById("timer_input").value;
     //fiddly code
+    update_list();
     timer_minutes = parseInt(timer_minutes);
     if(parseInt(timer_minutes) === timer_minutes) {
         var d = new Date();
@@ -144,6 +160,7 @@ document.getElementById("start").addEventListener("click",function(){
         countDownDate = new Date(milliseconds).getTime();
         update_list();
         document.getElementById("timer").innerHTML = "please wait...";
+        document.getElementById("points").innerHTML = "You will earn " + timer_minutes * 10 + " points";
         if(timer_minutes > 0 && timer_minutes < 1440) {
                 // Update the count down every 1 second
                 interval = setInterval(function() {
@@ -169,7 +186,11 @@ document.getElementById("start").addEventListener("click",function(){
                         clearInterval(interval);
                         interval = 0;
                         CountDownDate = 0;
+                        points = points + timer_minutes;
                         document.getElementById("timer").innerHTML = "Timer Ended";
+                        document.getElementById("points").innerHTML = "";
+                        update_list();
+                        //update_points();
                     }
                 }, 1000);
         }
@@ -213,6 +234,11 @@ function show_shop() {
 function hide_shop() {
     var div = document.getElementById("shop_section");
     div.style.display = "none";
+}
+
+function update_points() {
+    msg.id = "get";
+    chrome.runtime.sendMessage(msg);
 }
 
 document.getElementById("blocklist_btn").addEventListener("click", function() {
