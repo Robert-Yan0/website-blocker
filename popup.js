@@ -1,12 +1,27 @@
+var countDownDate = 0;
 var banned_urls = [];
 
-chrome.runtime.sendMessage(banned_urls);
+var msg = {
+    id: "get",
+    banned_urls: banned_urls,
+    end_time: countDownDate
+};
+
+
+chrome.runtime.sendMessage(msg);
 
 chrome.runtime.onMessage.addListener(getMessage);
 
 function getMessage(message, sender, sendResponse) {
-    banned_urls = message;
-    construct_list();
+
+    if(message.banned_urls.length) {
+        banned_urls = message.banned_urls
+        construct_list();
+    }
+    if(message.end_time) {
+        countDownDate = message.end_time;
+        start_timer();
+    }
 }
 
 
@@ -49,7 +64,10 @@ function addElement() {
 }
 
 function update_list() {
-    chrome.runtime.sendMessage(banned_urls);
+    msg.id = "update";
+    msg.banend_urls = banned_urls;
+    msg.end_time = countDownDate;
+    chrome.runtime.sendMessage(msg);
 }
 
 function add_close_functionality() {
@@ -71,7 +89,45 @@ function attach_close_button(li) {
     update_list();
 }
 
+
+var interval;
+
 //---------------------------------------------------------- timer code
+
+function start_timer() {
+      
+    document.getElementById("timer").innerHTML = "please wait...";
+            // Update the count down every 1 second
+            interval = setInterval(function() {
+            
+                // Get today's date and time
+                var now = new Date().getTime();
+            
+                // Find the distance between now and the count down date
+                var distance = countDownDate - now;
+            
+                // Time calculations for days, hours, minutes and seconds
+                //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+                // Output the result in an element with id="demo"
+                document.getElementById("timer").innerHTML = hours + "h "
+                + minutes + "m " + seconds + "s ";
+            
+                // If the count down is over, write some text 
+                if (distance < 0) {
+                    clearInterval(interval);
+                    interval = 0;
+                    CountDownDate = 0;
+                    document.getElementById("timer").innerHTML = "Timer Ended";
+                }
+            }, 1000);
+
+    document.getElementById("timer_input").value = "";
+}
+
 document.getElementById("start").addEventListener("click",function(){
     console.log("button clicked");
     var timer_minutes = document.getElementById("timer_input").value;
@@ -81,63 +137,49 @@ document.getElementById("start").addEventListener("click",function(){
         var d = new Date();
         var milliseconds = d.getTime();
         milliseconds = milliseconds + (timer_minutes * 60000);
-        var countDownDate = new Date(milliseconds).getTime();
-      
+        countDownDate = new Date(milliseconds).getTime();
+        update_list();
         document.getElementById("timer").innerHTML = "please wait...";
-        // Update the count down every 1 second
-        var x = setInterval(function() {
-      
-          // Get today's date and time
-          var now = new Date().getTime();
-      
-          // Find the distance between now and the count down date
-          var distance = countDownDate - now;
-      
-          // Time calculations for days, hours, minutes and seconds
-          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-          // Output the result in an element with id="demo"
-          document.getElementById("timer").innerHTML = days + "d " + hours + "h "
-          + minutes + "m " + seconds + "s ";
-      
-          // If the count down is over, write some text 
-          if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("timer").innerHTML = "EXPIRED";
-          }
-        }, 1000);
+        if(timer_minutes > 0 && timer_minutes < 1440) {
+                // Update the count down every 1 second
+                interval = setInterval(function() {
+                
+                    // Get today's date and time
+                    var now = new Date().getTime();
+                
+                    // Find the distance between now and the count down date
+                    var distance = countDownDate - now;
+                
+                    // Time calculations for days, hours, minutes and seconds
+                    //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                    // Output the result in an element with id="demo"
+                    document.getElementById("timer").innerHTML = hours + "h "
+                    + minutes + "m " + seconds + "s ";
+                
+                    // If the count down is over, write some text 
+                    if (distance < 0) {
+                        clearInterval(interval);
+                        interval = 0;
+                        CountDownDate = 0;
+                        document.getElementById("timer").innerHTML = "Timer Ended";
+                    }
+                }, 1000);
+        }
     }
     document.getElementById("timer_input").value = "";
     
 });
 
-function setup_timer(countDownDate) {
-        // Get today's date and time
-        var now = new Date().getTime();
-          
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
-          
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-          
-        // Output the result in an element with id="demo"
-        document.getElementById("timer").innerHTML = hours + "h "
-        + minutes + "m " + seconds + "s ";
-          
-        // If the count down is over, write some text 
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("demo").innerHTML = "EXPIRED";
-        }
-}
-
+document.getElementById("stop").addEventListener("click", function() {
+    clearInterval(interval);
+    interval = 0;
+    countDownDate = 0;
+    document.getElementById("timer").innerHTML = "Timer Ended";
+});
 
 function show_blocklist() {
     var div = document.getElementById("block_section");
