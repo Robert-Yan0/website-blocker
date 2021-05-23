@@ -14,7 +14,7 @@ redirect();
 function redirect() {
     for(elem of banned_urls) {
         if(url === elem) {
-            window.location.replace("https://en.wikipedia.org/wiki/Fortnite");
+            window.location.replace("https://blockr-redirect.jimwang1.repl.co/");
         }
     }
 }
