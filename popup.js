@@ -9,6 +9,10 @@ function getMessage(message, sender, sendResponse) {
     construct_list();
 }
 
+
+//---------------------------------------------------------- blocklist code
+
+
 var close = document.getElementsByClassName("close");
 
 
@@ -67,13 +71,80 @@ function attach_close_button(li) {
     update_list();
 }
 
+//---------------------------------------------------------- timer code
+document.getElementById("start").addEventListener("click",function(){
+    console.log("button clicked");
+    var timer_minutes = document.getElementById("timer_input").value;
+    //fiddly code
+    timer_minutes = parseInt(timer_minutes);
+    if(parseInt(timer_minutes) === timer_minutes) {
+        var d = new Date();
+        var milliseconds = d.getTime();
+        milliseconds = milliseconds + (timer_minutes * 60000);
+        var countDownDate = new Date(milliseconds).getTime();
+      
+        document.getElementById("timer").innerHTML = "please wait...";
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+      
+          // Get today's date and time
+          var now = new Date().getTime();
+      
+          // Find the distance between now and the count down date
+          var distance = countDownDate - now;
+      
+          // Time calculations for days, hours, minutes and seconds
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+          // Output the result in an element with id="demo"
+          document.getElementById("timer").innerHTML = days + "d " + hours + "h "
+          + minutes + "m " + seconds + "s ";
+      
+          // If the count down is over, write some text 
+          if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("timer").innerHTML = "EXPIRED";
+          }
+        }, 1000);
+    }
+    document.getElementById("timer_input").value = "";
+    
+});
+
+function setup_timer(countDownDate) {
+        // Get today's date and time
+        var now = new Date().getTime();
+          
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+          
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          
+        // Output the result in an element with id="demo"
+        document.getElementById("timer").innerHTML = hours + "h "
+        + minutes + "m " + seconds + "s ";
+          
+        // If the count down is over, write some text 
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+}
+
+
 function show_blocklist() {
     var div = document.getElementById("block_section");
     div.style.display = "block";    //shows the blocklist
 }
 
 function hide_blocklist() {
-    console.log("blocklist hidden");
     var div = document.getElementById("block_section");
     div.style.display = "none";    //hide the blocklist
 }
@@ -99,14 +170,12 @@ function hide_shop() {
 }
 
 document.getElementById("blocklist_btn").addEventListener("click", function() {
-    console.log("button clicked");
     show_blocklist();
     hide_timer();
     hide_shop();
 });
 
 document.getElementById("timer_btn").addEventListener("click", function() {
-    console.log("button clicked");
     
     show_timer();
     hide_blocklist();
@@ -114,7 +183,6 @@ document.getElementById("timer_btn").addEventListener("click", function() {
 });
 
 document.getElementById("shop_btn").addEventListener("click", function() {
-    console.log("button clicked");
     
     show_shop();
     hide_blocklist();
